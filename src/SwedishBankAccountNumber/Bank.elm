@@ -1,7 +1,7 @@
 module SwedishBankAccountNumber.Bank exposing (AccountNumberLength(..), Bank, fromClearing, getAccountNumberLength, getName, toIntList, validateAccountNumber)
 
-{-| This file is basically Bankgirot’s PDF (included in this repo) converted into
-code. Go read it to get familiar with lingo such as “Type 1” and “Type 2”.
+{-| This file is basically Bankgirot’s PDF converted into code.
+Go read it to get familiar with lingo such as “Type 1” and “Type 2”.
 -}
 
 import SwedishBankAccountNumber.Checksum as Checksum

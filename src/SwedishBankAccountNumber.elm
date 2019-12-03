@@ -1,17 +1,16 @@
 module SwedishBankAccountNumber exposing
-    ( SwedishBankAccountNumber, fromStringUsingClearingNumber, toRecord
+    ( SwedishBankAccountNumber, Error(..), fromStringUsingClearingNumber, toRecord
     , AccountNumberLength(..), getAccountNumberLength
-    , Error(..)
     )
 
-{-| This library lets you validate Swedish Bank Account numbers.
+{-| This library lets you validate Swedish bank account numbers.
 
-First, validate a clearing number using [SwedishBankAccountNumber.ClearingNumber.fromString](TODO).
+First, validate a clearing number using [SwedishBankAccountNumber.ClearingNumber.fromString](./SwedishBankAccountNumber-ClearingNumber#fromString).
 
-Then, validate an account number using [SwedishBankAccountNumber.fromStringUsingClearingNumber](TODO).
+Then, validate an account number using [SwedishBankAccountNumber.fromStringUsingClearingNumber](#fromStringUsingClearingNumber).
 
 
-# Main functions
+# Main
 
 @docs SwedishBankAccountNumber, Error, fromStringUsingClearingNumber, toRecord
 
@@ -40,7 +39,7 @@ A bank account number consists of two parts:
 
 The only way to create a value of the `SwedishBankAccountNumber` type is by
 calling `fromStringUsingClearingNumber`. This way, if you encounter a
-`SwedishBankAccountNumber`, you know that it is always valid.
+`SwedishBankAccountNumber` you always know that it’s valid.
 
 `SwedishBankAccountNumber` also contains information about which Swedish bank
 the bank account number is for.
@@ -54,13 +53,13 @@ type SwedishBankAccountNumber
 
   - The account number is too short or too long. `BadAccountNumberLength`
     contains how many digits were actually passed;
-    [getAccountNumberLength](TODO) lets you know how many are valid.
+    [getAccountNumberLength](#getAccountNumberLength) lets you know how many are valid.
   - The checksum of the bank account number is invalid (the last digit of
     account numbers is a control digit that is supposed to make the checksum
     add up).
 
 (Constructing a `ClearingNumber` can fail in its own ways – see
-[SwedishBankAccountNumber.ClearingNumber.Error](TODO).)
+[SwedishBankAccountNumber.ClearingNumber.Error](./SwedishBankAccountNumber-ClearingNumber#Error).)
 
 -}
 type Error
@@ -71,7 +70,7 @@ type Error
 {-| Validate and construct a `SwedishBankAccountNumber`.
 
 First, you need to get a `ClearingNumber` via
-[SwedishBankAccountNumber.ClearingNumber.fromString](TODO).
+[SwedishBankAccountNumber.ClearingNumber.fromString](./SwedishBankAccountNumber-ClearingNumber#fromString).
 
 Then, pass the validated `ClearingNumber` and an unvalidated account number
 string to get a full bank account number.
@@ -129,7 +128,7 @@ your backend, use this function to get all of its data.
   - `bankName` is a human readable string name of the bank identified from the
     clearing number, such as “Länsförsäkringar Bank”.
   - `clearingNumber` and `accountNumber` are strings containing digits only
-    (no hyphens or spaces or anything).
+    (no hyphens or spaces or anything), such as “9420“ and “4172385”, respectively.
 
 -}
 toRecord : SwedishBankAccountNumber -> { bankName : String, clearingNumber : String, accountNumber : String }

@@ -1,7 +1,7 @@
 {
     "type": "package",
     "name": "insurello/elm-swedish-bank-account-number",
-    "summary": "Validate Swedish Bank Account numbers",
+    "summary": "Validate Swedish bank account numbers",
     "license": "MIT",
     "version": "1.0.0",
     "exposed-modules": [

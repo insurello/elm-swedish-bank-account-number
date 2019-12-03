@@ -1,7 +1,4 @@
-module SwedishBankAccountNumber.ClearingNumber exposing
-    ( ClearingNumber, Error(..), fromString, toString
-    , getBankName
-    )
+module SwedishBankAccountNumber.ClearingNumber exposing (ClearingNumber, Error(..), fromString, toString, getBankName)
 
 {-| Validating a bank account number is a two-step process: First you need to
 validate the clearing number. Why?
@@ -16,7 +13,7 @@ This module lets you validate clearing numbers.
 
 -}
 
-import SwedishBankAccountNumber.Bank as Bank exposing (Bank)
+import SwedishBankAccountNumber.Bank as Bank
 import SwedishBankAccountNumber.ClearingNumberInternal exposing (ClearingNumberInternal(..))
 
 
@@ -91,7 +88,8 @@ fromString string =
             Err (BadLength numDigits)
 
 
-{-| Get a string containing digits only (no hyphens or spaces or anything).
+{-| Get a string containing digits only (no hyphens or spaces or anything),
+such as “9420”.
 -}
 toString : ClearingNumber -> String
 toString (ClearingNumber _ clearingNumber) =
