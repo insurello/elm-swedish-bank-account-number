@@ -6,7 +6,12 @@ import SwedishBankAccountNumber.ClearingNumber
 import Test exposing (Test, describe, test)
 
 
-validate : String -> String -> Result String SwedishBankAccountNumber
+type Error
+    = Clearing SwedishBankAccountNumber.ClearingNumber.Error
+    | Account SwedishBankAccountNumber.Error
+
+
+validate : String -> String -> Result Error SwedishBankAccountNumber
 validate clearingString accountString =
     case SwedishBankAccountNumber.ClearingNumber.fromString clearingString of
         Ok clearingNumber ->
@@ -14,22 +19,60 @@ validate clearingString accountString =
                 Ok bankAccountNumber ->
                     Ok bankAccountNumber
 
-                Err (SwedishBankAccountNumber.BadAccountNumberLength length) ->
-                    Err ("BadAccountNumberLength " ++ String.fromInt length)
+                Err error ->
+                    Err (Account error)
 
-                Err SwedishBankAccountNumber.BadChecksum ->
-                    Err "BadChecksum"
-
-        Err (SwedishBankAccountNumber.ClearingNumber.BadLength length) ->
-            Err ("ClearingNumber.BadLength " ++ String.fromInt length)
-
-        Err SwedishBankAccountNumber.ClearingNumber.Unknown ->
-            Err "ClearingNumber.Unknown"
+        Err error ->
+            Err (Clearing error)
 
 
 suite : Test
 suite =
     describe "SwedishBankAccountNumber"
+        [ bankSuite
+        , clearingNumberSuite
+        , describe "Error"
+            [ test "Too short" <|
+                \_ ->
+                    validate "1234" "123456"
+                        |> Expect.equal (Err (Account (SwedishBankAccountNumber.BadAccountNumberLength 6)))
+            , test "Too long" <|
+                \_ ->
+                    validate "1234" "12345678"
+                        |> Expect.equal (Err (Account (SwedishBankAccountNumber.BadAccountNumberLength 8)))
+            , test "Bad checksum" <|
+                \_ ->
+                    validate "1234" "1234567"
+                        |> Expect.equal (Err (Account SwedishBankAccountNumber.BadChecksum))
+            , test "Bad checksum Handelsbanken" <|
+                \_ ->
+                    validate "6234" "123456780"
+                        |> Expect.equal (Err (Account SwedishBankAccountNumber.BadChecksum))
+            ]
+        , describe "getAccountNumberLength"
+            [ test "Handelsbanken" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "6987"
+                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Expect.equal (Ok (SwedishBankAccountNumber.FixedLength 9))
+            , test "Swedbank 4-digit" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "7123"
+                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Expect.equal (Ok (SwedishBankAccountNumber.FixedLength 7))
+            , test "Swedbank 5-digit" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "81232"
+                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Expect.equal (Ok (SwedishBankAccountNumber.Range 6 10))
+            ]
+        ]
+
+
+bankSuite : Test
+bankSuite =
+    -- https://github.com/jop-io/kontonummer.js/blob/7543f48bcac54a6d43fde19fba07e3404d112651/test.html
+    describe "Banks"
         [ test "Forex" <|
             \_ ->
                 validate "9420" ", 417 23 85"
@@ -107,4 +150,38 @@ suite =
                             , accountNumber = "1111113"
                             }
                         )
+        ]
+
+
+clearingNumberSuite : Test
+clearingNumberSuite =
+    describe "ClearingNumber"
+        [ describe "Error"
+            [ test "Too short" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "123"
+                        |> Expect.equal (Err (SwedishBankAccountNumber.ClearingNumber.BadLength 3))
+            , test "Too long" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "123456"
+                        |> Expect.equal (Err (SwedishBankAccountNumber.ClearingNumber.BadLength 6))
+            , test "Unknown" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "9999"
+                        |> Expect.equal (Err SwedishBankAccountNumber.ClearingNumber.Unknown)
+            , test "Unknown Swedbank" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "81234"
+                        |> Expect.equal (Err SwedishBankAccountNumber.ClearingNumber.Unknown)
+            ]
+        , test "toString" <|
+            \_ ->
+                SwedishBankAccountNumber.ClearingNumber.fromString " 96 61-"
+                    |> Result.map SwedishBankAccountNumber.ClearingNumber.toString
+                    |> Expect.equal (Ok "9661")
+        , test "getBankName" <|
+            \_ ->
+                SwedishBankAccountNumber.ClearingNumber.fromString "9661"
+                    |> Result.map SwedishBankAccountNumber.ClearingNumber.getBankName
+                    |> Expect.equal (Ok "Svea Bank")
         ]
