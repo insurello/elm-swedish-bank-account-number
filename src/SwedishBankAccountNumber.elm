@@ -1,5 +1,5 @@
 module SwedishBankAccountNumber exposing
-    ( SwedishBankAccountNumber, Error(..), fromStringUsingClearingNumber, toRecord
+    ( SwedishBankAccountNumber, Error(..), create, toRecord
     , AccountNumberLength(..), getAccountNumberLength
     )
 
@@ -7,12 +7,12 @@ module SwedishBankAccountNumber exposing
 
 First, validate a clearing number using [SwedishBankAccountNumber.ClearingNumber.fromString](./SwedishBankAccountNumber-ClearingNumber#fromString).
 
-Then, validate an account number using [SwedishBankAccountNumber.fromStringUsingClearingNumber](#fromStringUsingClearingNumber).
+Then, validate an account number using [SwedishBankAccountNumber.create](#create).
 
 
 # Main
 
-@docs SwedishBankAccountNumber, Error, fromStringUsingClearingNumber, toRecord
+@docs SwedishBankAccountNumber, Error, create, toRecord
 
 
 # Helpers
@@ -38,8 +38,8 @@ A bank account number consists of two parts:
 2.  The account number: 4172385
 
 The only way to create a value of the `SwedishBankAccountNumber` type is by
-calling `fromStringUsingClearingNumber`. This way, if you encounter a
-`SwedishBankAccountNumber` you always know that it’s valid.
+calling `create`. This way, if you encounter a `SwedishBankAccountNumber` you
+always know that it’s valid.
 
 `SwedishBankAccountNumber` also contains information about which Swedish bank
 the bank account number is for.
@@ -88,8 +88,8 @@ If you have a form field for the account number, you might want to normalize
 it on blur. You can use `String.filter Char.isDigit myString` to do so.
 
 -}
-fromStringUsingClearingNumber : ClearingNumber -> String -> Result Error SwedishBankAccountNumber
-fromStringUsingClearingNumber ((ClearingNumber bank clearingNumberString) as clearingNumber) string =
+create : ClearingNumber -> String -> Result Error SwedishBankAccountNumber
+create ((ClearingNumber bank clearingNumberString) as clearingNumber) string =
     let
         digits =
             String.filter Char.isDigit string

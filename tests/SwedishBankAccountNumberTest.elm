@@ -10,7 +10,7 @@ validate : String -> String -> Result String SwedishBankAccountNumber
 validate clearingString accountString =
     case SwedishBankAccountNumber.ClearingNumber.fromString clearingString of
         Ok clearingNumber ->
-            case SwedishBankAccountNumber.fromStringUsingClearingNumber clearingNumber accountString of
+            case SwedishBankAccountNumber.create clearingNumber accountString of
                 Ok bankAccountNumber ->
                     Ok bankAccountNumber
 
