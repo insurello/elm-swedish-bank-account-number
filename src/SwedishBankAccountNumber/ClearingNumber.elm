@@ -41,7 +41,7 @@ type alias ClearingNumber =
 -}
 type Error
     = BadLength Int
-    | Unknown String
+    | Unknown
 
 
 {-| Validate and construct a `ClearingNumber`.
@@ -82,7 +82,7 @@ fromString string =
                     Ok (ClearingNumber bank digits)
 
                 Nothing ->
-                    Err (Unknown digits)
+                    Err Unknown
 
         Nothing ->
             Err (BadLength numDigits)

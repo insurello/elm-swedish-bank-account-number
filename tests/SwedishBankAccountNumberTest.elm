@@ -23,8 +23,8 @@ validate clearingString accountString =
         Err (SwedishBankAccountNumber.ClearingNumber.BadLength length) ->
             Err ("ClearingNumber.BadLength " ++ String.fromInt length)
 
-        Err (SwedishBankAccountNumber.ClearingNumber.Unknown digits) ->
-            Err ("ClearingNumber.Unknown " ++ digits)
+        Err SwedishBankAccountNumber.ClearingNumber.Unknown ->
+            Err "ClearingNumber.Unknown"
 
 
 suite : Test
