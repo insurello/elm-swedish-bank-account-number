@@ -5,6 +5,8 @@ This library lets you validate Swedish bank account numbers.
 Inspired by https://github.com/jop-io/kontonummer.js. Big thanks to the
 creators of that package!
 
+[📎 Data sources](https://github.com/insurello/elm-swedish-bank-account-number/issues/1)
+
 ## Example
 
 ```elm
