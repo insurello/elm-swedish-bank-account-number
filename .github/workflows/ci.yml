@@ -40,7 +40,7 @@ jobs:
         run: npx --no-install elm-tooling install
 
       - name: elm make
-        run: git ls-files src | xargs elm make
+        run: git ls-files src | xargs npx --no-install elm make
 
       - name: elm-test
         run: npx --no-install elm-test
