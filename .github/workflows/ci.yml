@@ -1,34 +1,49 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: 16
 
       - name: Cache node_modules
-        uses: actions/cache@v1
+        id: cache-node_modules
+        uses: actions/cache@v2
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('package-lock.json') }}
+          key: node_modules-${{ hashFiles('package.json', 'package-lock.json') }}
 
-      - name: Cache elm
-        uses: actions/cache@v1
+      - name: Cache ~/.elm
+        uses: actions/cache@v2
         with:
           path: ~/.elm
           key: elm-${{ hashFiles('elm.json') }}
 
-      - name: Run workflow
-        run: |
-          test -d node_modules || npm ci
-          npm test
+      - name: npm ci
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
         env:
-          CI: true
+          NO_ELM_TOOLING_INSTALL: 1
+        run: npm ci
+
+      - name: elm-tooling install
+        run: npx --no-install elm-tooling install
+
+      - name: elm make
+        run: git ls-files src | xargs npx --no-install elm make
+
+      - name: elm-test
+        run: npx --no-install elm-test
+
+      - name: elm-format
+        run: npx --no-install elm-format --validate src tests
