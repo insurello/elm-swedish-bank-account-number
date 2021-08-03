@@ -119,6 +119,7 @@ type Bank
     | MedMera
     | Nordax
     | Nordnet
+    | Northmill
     | Resurs
     | Santander
     | SBAB
@@ -198,6 +199,9 @@ getName bank =
 
         Nordnet ->
             "Nordnet Bank"
+
+        Northmill ->
+            "Northmill Bank"
 
         Resurs ->
             "Resurs Bank"
@@ -316,6 +320,9 @@ clearingRanges =
       )
     , ( Nordnet
       , range 9100 9109
+      )
+    , ( Northmill
+      , range 9750 9759
       )
     , ( Resurs
       , range 9280 9289
@@ -462,6 +469,9 @@ getAccountNumberLength bank =
         Nordnet ->
             FixedLength 7
 
+        Northmill ->
+            FixedLength 7
+
         Resurs ->
             FixedLength 7
 
@@ -578,6 +588,9 @@ getAccountType bank =
             Type1 Full
 
         Nordnet ->
+            Type1 Full
+
+        Northmill ->
             Type1 Full
 
         Resurs ->
