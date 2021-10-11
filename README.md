@@ -62,4 +62,4 @@ MIT
 
 ---
 
-[![Insurello](https://gitcdn.xyz/repo/insurello/elm-swedish-bank-account-number/master/insurello.svg)](https://jobb.insurello.se/departments/product-tech)
+[![Insurello](https://rawcdn.githack.com/insurello/elm-swedish-bank-account-number/3bdb60c9f500ff4e7b4888c74fae43bf63e5cbd5/insurello.svg)](https://jobb.insurello.se/departments/product-tech)
