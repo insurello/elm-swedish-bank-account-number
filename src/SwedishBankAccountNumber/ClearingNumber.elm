@@ -1,4 +1,4 @@
-module SwedishBankAccountNumber.ClearingNumber exposing (ClearingNumber, Error(..), fromString, toString, getBankName)
+module SwedishBankAccountNumber.ClearingNumber exposing (ClearingNumber, Error(..), fromString, toString, getBankName, getCategory)
 
 {-| Validating a bank account number is a two-step process: First you need to
 validate the clearing number. Why?
@@ -9,7 +9,7 @@ validate the clearing number. Why?
 
 This module lets you validate clearing numbers.
 
-@docs ClearingNumber, Error, fromString, toString, getBankName
+@docs ClearingNumber, Error, fromString, toString, getBankName, getCategory
 
 -}
 
@@ -102,3 +102,13 @@ number, such as “Länsförsäkringar Bank”.
 getBankName : ClearingNumber -> String
 getBankName (ClearingNumber bank _) =
     Bank.getName bank
+
+
+{-| Get the [Category](TODO) of the bank identified from the clearing number.
+
+TODO: Need to expose the Bank.Category type and its variants.
+
+-}
+getCategory : ClearingNumber -> Bank.Category
+getCategory (ClearingNumber bank _) =
+    Bank.getCategory bank
