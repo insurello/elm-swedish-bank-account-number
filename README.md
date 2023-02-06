@@ -23,22 +23,45 @@ type Validation
 validate : String -> String -> Validation
 validate clearingNumberString accountNumberString =
     case SwedishBankAccountNumber.ClearingNumber.fromString clearingNumberString of
-        Ok clearingNumber ->
-            case SwedishBankAccountNumber.create clearingNumber accountNumberString of
-                Ok bankAccountNumber ->
-                    Valid bankAccountNumber
+        Ok ( category, clearingNumber ) ->
+            case category of
+                SwedishBankAccountNumber.ClearingNumber.Standard ->
+                    case SwedishBankAccountNumber.create clearingNumber accountNumberString of
+                        Ok bankAccountNumber ->
+                            Valid bankAccountNumber
 
-                Err (SwedishBankAccountNumber.BadAccountNumberLength length) ->
-                    InvalidAccountNumber clearingNumber
-                        ("The account number must be " ++ getAccountNumberLength clearingNumber ++ " digits. You entered " ++ String.fromInt length ++ ".")
+                        Err (SwedishBankAccountNumber.BadAccountNumberLength length) ->
+                            InvalidAccountNumber clearingNumber
+                                ("The account number must be "
+                                    ++ getAccountNumberLength clearingNumber
+                                    ++ " digits. You entered "
+                                    ++ String.fromInt length
+                                    ++ "."
+                                )
 
-                Err SwedishBankAccountNumber.BadChecksum ->
+                        Err SwedishBankAccountNumber.BadChecksum ->
+                            InvalidAccountNumber clearingNumber
+                                "Invalid account number. Some digit is wrong."
+
+                SwedishBankAccountNumber.ClearingNumber.DataclearingOnly ->
                     InvalidAccountNumber clearingNumber
-                        "Invalid account number. Some digit is wrong."
+                        ("We are unfortunately not able to make payments to "
+                            ++ SwedishBankAccountNumber.ClearingNumber.getBankName clearingNumber
+                            ++ "."
+                        )
+
+                SwedishBankAccountNumber.ClearingNumber.Historical ->
+                    InvalidAccountNumber clearingNumber
+                        (SwedishBankAccountNumber.ClearingNumber.getBankName clearingNumber
+                            ++ " does not exist anymore."
+                        )
 
         Err (SwedishBankAccountNumber.ClearingNumber.BadLength length) ->
             InvalidClearingNumber
-                ("The clearing number must be 4-5 digits. You entered " ++ String.fromInt length ++ ".")
+                ("The clearing number must be 4-5 digits. You entered "
+                    ++ String.fromInt length
+                    ++ "."
+                )
 
         Err SwedishBankAccountNumber.ClearingNumber.Unknown ->
             InvalidClearingNumber

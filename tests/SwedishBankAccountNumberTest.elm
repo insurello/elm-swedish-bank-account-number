@@ -14,7 +14,7 @@ type Error
 validate : String -> String -> Result Error SwedishBankAccountNumber
 validate clearingString accountString =
     case SwedishBankAccountNumber.ClearingNumber.fromString clearingString of
-        Ok clearingNumber ->
+        Ok ( _, clearingNumber ) ->
             case SwedishBankAccountNumber.create clearingNumber accountString of
                 Ok bankAccountNumber ->
                     Ok bankAccountNumber
@@ -53,17 +53,17 @@ suite =
             [ test "Handelsbanken" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "6987"
-                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Result.map (Tuple.second >> SwedishBankAccountNumber.getAccountNumberLength)
                         |> Expect.equal (Ok (SwedishBankAccountNumber.FixedLength 9))
             , test "Swedbank 4-digit" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "7123"
-                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Result.map (Tuple.second >> SwedishBankAccountNumber.getAccountNumberLength)
                         |> Expect.equal (Ok (SwedishBankAccountNumber.FixedLength 7))
             , test "Swedbank 5-digit" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "81232"
-                        |> Result.map SwedishBankAccountNumber.getAccountNumberLength
+                        |> Result.map (Tuple.second >> SwedishBankAccountNumber.getAccountNumberLength)
                         |> Expect.equal (Ok (SwedishBankAccountNumber.Range 6 10))
             ]
         ]
@@ -177,11 +177,28 @@ clearingNumberSuite =
         , test "toString" <|
             \_ ->
                 SwedishBankAccountNumber.ClearingNumber.fromString " 96 61-"
-                    |> Result.map SwedishBankAccountNumber.ClearingNumber.toString
+                    |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.toString)
                     |> Expect.equal (Ok "9661")
         , test "getBankName" <|
             \_ ->
                 SwedishBankAccountNumber.ClearingNumber.fromString "9661"
-                    |> Result.map SwedishBankAccountNumber.ClearingNumber.getBankName
+                    |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.getBankName)
                     |> Expect.equal (Ok "Svea Bank")
+        , describe "Category"
+            [ test "Standard" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "7000"
+                        |> Result.map Tuple.first
+                        |> Expect.equal (Ok SwedishBankAccountNumber.ClearingNumber.Standard)
+            , test "DataclearingOnly" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "9550"
+                        |> Result.map Tuple.first
+                        |> Expect.equal (Ok SwedishBankAccountNumber.ClearingNumber.DataclearingOnly)
+            , test "Historical" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "9400"
+                        |> Result.map Tuple.first
+                        |> Expect.equal (Ok SwedishBankAccountNumber.ClearingNumber.Historical)
+            ]
         ]

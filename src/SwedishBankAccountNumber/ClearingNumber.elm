@@ -1,4 +1,7 @@
-module SwedishBankAccountNumber.ClearingNumber exposing (ClearingNumber, Error(..), fromString, toString, getBankName, getCategory)
+module SwedishBankAccountNumber.ClearingNumber exposing
+    ( ClearingNumber, Error(..), fromString, toString, getBankName
+    , Category(..)
+    )
 
 {-| Validating a bank account number is a two-step process: First you need to
 validate the clearing number. Why?
@@ -9,7 +12,7 @@ validate the clearing number. Why?
 
 This module lets you validate clearing numbers.
 
-@docs ClearingNumber, Error, fromString, toString, getBankName, getCategory
+@docs ClearingNumber, Error, fromString, toString, getBankName
 
 -}
 
@@ -44,6 +47,36 @@ type Error
     | Unknown
 
 
+{-| Banks are categorized into three categories:
+
+  - `Standard`: The bank is active, and part of both the Bankgiro and Data clearing systems.
+  - `DataclearingOnly`: The bank is active, part of the Data clearing system,
+    but _not_ part of the Bankgiro system. They are marked with “(deltar endast i
+    Dataclearingen, ej i Bankgirosystemet)” in Bankgirot’s PDF. (Bankgirot is a
+    Swedish Clearing organization, while “Dataclearingen” is a transfer system owned
+    by the Swedish Bankers’ Association.)
+  - `Historical`: The bank does not exist anymore.
+
+-}
+type Category
+    = Standard
+    | DataclearingOnly
+    | Historical
+
+
+convertCategory : Bank.Category -> Category
+convertCategory bankCategory =
+    case bankCategory of
+        Bank.Standard ->
+            Standard
+
+        Bank.DataclearingOnly ->
+            DataclearingOnly
+
+        Bank.Historical ->
+            Historical
+
+
 {-| Validate and construct a `ClearingNumber`.
 
 The clearing number string is allowed to have any kind of crazy formatting.
@@ -58,8 +91,17 @@ characters. The following all mean the same thing:
 If you have a form field for the clearing number, you might want to normalize
 it on blur. You can use `String.filter Char.isDigit myString` to do so.
 
+The function also returns the [Category](#Category) of the bank, to remind you
+to case on the different categories:
+
+  - `Standard`: All is good to go!
+  - `DataclearingOnly`: If your system only can make Bankgiro transfers, you
+    might want to show an error message for this category.
+  - `Historical`: You probably want to show a nice error message saying that the
+    bank does not exist anymore.
+
 -}
-fromString : String -> Result Error ClearingNumber
+fromString : String -> Result Error ( Category, ClearingNumber )
 fromString string =
     let
         digits =
@@ -79,7 +121,10 @@ fromString string =
         Just clearing ->
             case Bank.fromClearing clearing of
                 Just bank ->
-                    Ok (ClearingNumber bank digits)
+                    Ok
+                        ( convertCategory (Bank.getCategory bank)
+                        , ClearingNumber bank digits
+                        )
 
                 Nothing ->
                     Err Unknown
@@ -102,13 +147,3 @@ number, such as “Länsförsäkringar Bank”.
 getBankName : ClearingNumber -> String
 getBankName (ClearingNumber bank _) =
     Bank.getName bank
-
-
-{-| Get the [Category](TODO) of the bank identified from the clearing number.
-
-TODO: Need to expose the Bank.Category type and its variants.
-
--}
-getCategory : ClearingNumber -> Bank.Category
-getCategory (ClearingNumber bank _) =
-    Bank.getCategory bank
