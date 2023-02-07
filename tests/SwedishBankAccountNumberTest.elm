@@ -185,17 +185,17 @@ clearingNumberSuite =
                     |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.getBankName)
                     |> Expect.equal (Ok "Svea Bank")
         , describe "Category"
-            [ test "Standard" <|
+            [ test "Standard (Swedbank)" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "7000"
                         |> Result.map Tuple.first
                         |> Expect.equal (Ok SwedishBankAccountNumber.ClearingNumber.Standard)
-            , test "DataclearingOnly" <|
+            , test "DataclearingOnly (Avanza)" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "9550"
                         |> Result.map Tuple.first
                         |> Expect.equal (Ok SwedishBankAccountNumber.ClearingNumber.DataclearingOnly)
-            , test "Historical" <|
+            , test "Historical (Forex)" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "9400"
                         |> Result.map Tuple.first
