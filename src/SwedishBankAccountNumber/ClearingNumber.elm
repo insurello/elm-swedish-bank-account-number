@@ -1,7 +1,4 @@
-module SwedishBankAccountNumber.ClearingNumber exposing
-    ( ClearingNumber, Error(..), fromString, toString, getBankName
-    , Category(..)
-    )
+module SwedishBankAccountNumber.ClearingNumber exposing (ClearingNumber, Error(..), Category(..), fromString, toString, getBankName)
 
 {-| Validating a bank account number is a two-step process: First you need to
 validate the clearing number. Why?
@@ -12,7 +9,7 @@ validate the clearing number. Why?
 
 This module lets you validate clearing numbers.
 
-@docs ClearingNumber, Error, fromString, toString, getBankName
+@docs ClearingNumber, Error, Category, fromString, toString, getBankName
 
 -}
 
