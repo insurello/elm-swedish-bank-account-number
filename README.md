@@ -45,7 +45,7 @@ validate clearingNumberString accountNumberString =
 
                 SwedishBankAccountNumber.ClearingNumber.DataclearingOnly ->
                     InvalidAccountNumber clearingNumber
-                        ("We are unfortunately not able to make payments to "
+                        ("We are unfortunately not able to make transfers to "
                             ++ SwedishBankAccountNumber.ClearingNumber.getBankName clearingNumber
                             ++ "."
                         )
