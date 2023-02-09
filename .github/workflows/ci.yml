@@ -11,21 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Cache node_modules
         id: cache-node_modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('package.json', 'package-lock.json') }}
 
       - name: Cache ~/.elm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.elm
           key: elm-${{ hashFiles('elm.json') }}
@@ -36,14 +36,10 @@ jobs:
           NO_ELM_TOOLING_INSTALL: 1
         run: npm ci
 
-      - name: elm-tooling install
-        run: npx --no-install elm-tooling install
+      - run: npx elm-tooling install
 
-      - name: elm make
-        run: git ls-files src | xargs npx --no-install elm make
+      - run: npx elm make
 
-      - name: elm-test
-        run: npx --no-install elm-test
+      - run: npx elm-test
 
-      - name: elm-format
-        run: npx --no-install elm-format --validate src tests
+      - run: npx elm-format --validate .

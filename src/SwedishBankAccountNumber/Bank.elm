@@ -1,4 +1,4 @@
-module SwedishBankAccountNumber.Bank exposing (AccountNumberLength(..), Bank, fromClearing, getAccountNumberLength, getName, toIntList, validateAccountNumber)
+module SwedishBankAccountNumber.Bank exposing (AccountNumberLength(..), Bank, Category(..), fromClearing, getAccountNumberLength, getCategory, getName, toIntList, validateAccountNumber)
 
 {-| This file is basically Bankgirot’s PDF converted into code.
 Go read it to get familiar with lingo such as “Type 1” and “Type 2”.
@@ -107,12 +107,14 @@ type Bank
     | DNB
     | Ekobanken
     | ErikPenser
+    | Ferratum
     | Forex
     | ICA
     | IKANO
     | JAK
     | Klarna
     | Landshypotek
+    | Lunar
     | LanSpar
     | Lansforsakringar AccountType1Validation
     | Marginalen
@@ -164,6 +166,9 @@ getName bank =
         ErikPenser ->
             "Erik Penser"
 
+        Ferratum ->
+            "Ferratum Bank"
+
         Forex ->
             "Forex Bank"
 
@@ -181,6 +186,9 @@ getName bank =
 
         Landshypotek ->
             "Landshypotek"
+
+        Lunar ->
+            "Lunar Bank"
 
         LanSpar ->
             "Lån & Spar Bank Sverige"
@@ -279,6 +287,9 @@ clearingRanges =
     , ( ErikPenser
       , range 9590 9599
       )
+    , ( Ferratum
+      , range 9070 9079
+      )
     , ( Forex
       , range 9400 9449
       )
@@ -296,6 +307,9 @@ clearingRanges =
       )
     , ( Landshypotek
       , range 9390 9399
+      )
+    , ( Lunar
+      , range 9710 9719
       )
     , ( LanSpar
       , range 9630 9639
@@ -433,6 +447,9 @@ getAccountNumberLength bank =
         ErikPenser ->
             FixedLength 7
 
+        Ferratum ->
+            FixedLength 7
+
         Forex ->
             FixedLength 7
 
@@ -449,6 +466,9 @@ getAccountNumberLength bank =
             FixedLength 7
 
         Landshypotek ->
+            FixedLength 7
+
+        Lunar ->
             FixedLength 7
 
         LanSpar ->
@@ -554,6 +574,9 @@ getAccountType bank =
         ErikPenser ->
             Type1 Full
 
+        Ferratum ->
+            Type1 SkipFirstDigit
+
         Forex ->
             Type1 SkipFirstDigit
 
@@ -570,6 +593,9 @@ getAccountType bank =
             Type1 Full
 
         Landshypotek ->
+            Type1 Full
+
+        Lunar ->
             Type1 Full
 
         LanSpar ->
@@ -637,3 +663,127 @@ getAccountType bank =
 
         SwedbankSparbankenOresund ->
             Type2 Mod10
+
+
+type Category
+    = Standard
+    | DataclearingOnly
+    | Historical
+
+
+getCategory : Bank -> Category
+getCategory bank =
+    case bank of
+        Svea ->
+            Standard
+
+        Avanza ->
+            DataclearingOnly
+
+        BlueStep ->
+            DataclearingOnly
+
+        BNP ->
+            Standard
+
+        Citibank ->
+            Standard
+
+        DNB ->
+            Standard
+
+        Ekobanken ->
+            Standard
+
+        ErikPenser ->
+            Standard
+
+        Ferratum ->
+            Standard
+
+        Forex ->
+            Historical
+
+        ICA ->
+            Standard
+
+        IKANO ->
+            Standard
+
+        JAK ->
+            Standard
+
+        Klarna ->
+            Standard
+
+        Landshypotek ->
+            DataclearingOnly
+
+        Lunar ->
+            DataclearingOnly
+
+        LanSpar ->
+            DataclearingOnly
+
+        Lansforsakringar _ ->
+            Standard
+
+        Marginalen ->
+            Standard
+
+        MedMera ->
+            Historical
+
+        Nordax ->
+            DataclearingOnly
+
+        Nordnet ->
+            Standard
+
+        Northmill ->
+            Standard
+
+        Resurs ->
+            Standard
+
+        Santander ->
+            DataclearingOnly
+
+        SBAB ->
+            Standard
+
+        SEB ->
+            Standard
+
+        Skandia ->
+            Standard
+
+        Alandsbanken ->
+            Standard
+
+        Danske _ ->
+            Standard
+
+        Handelsbanken ->
+            Standard
+
+        Nordea _ ->
+            Standard
+
+        NordeaPersonkonto ->
+            Standard
+
+        NordeaPlusgirot ->
+            Standard
+
+        Riksgalden _ ->
+            Standard
+
+        SparbankenSyd ->
+            Standard
+
+        Swedbank _ ->
+            Standard
+
+        SwedbankSparbankenOresund ->
+            Standard
