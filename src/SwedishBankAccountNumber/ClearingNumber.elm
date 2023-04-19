@@ -120,7 +120,7 @@ fromString string =
                 Just bank ->
                     Ok
                         ( convertCategory (Bank.getCategory bank)
-                        , ClearingNumber bank digits
+                        , ClearingNumber bank (String.fromInt clearing)
                         )
 
                 Nothing ->
