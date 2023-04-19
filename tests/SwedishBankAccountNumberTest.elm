@@ -176,9 +176,17 @@ clearingNumberSuite =
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "123456"
                         |> Expect.equal (Err (SwedishBankAccountNumber.ClearingNumber.BadLength 6))
+            , test "Too long due to leading zeroes" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "001234"
+                        |> Expect.equal (Err (SwedishBankAccountNumber.ClearingNumber.BadLength 6))
             , test "Unknown" <|
                 \_ ->
                     SwedishBankAccountNumber.ClearingNumber.fromString "9999"
+                        |> Expect.equal (Err SwedishBankAccountNumber.ClearingNumber.Unknown)
+            , test "Unknown with leading zeroes" <|
+                \_ ->
+                    SwedishBankAccountNumber.ClearingNumber.fromString "0099"
                         |> Expect.equal (Err SwedishBankAccountNumber.ClearingNumber.Unknown)
             , test "Unknown Swedbank" <|
                 \_ ->
@@ -190,9 +198,9 @@ clearingNumberSuite =
                 SwedishBankAccountNumber.ClearingNumber.fromString " 96 61-"
                     |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.toString)
                     |> Expect.equal (Ok "9661")
-        , test "remove leading zeroes" <|
+        , test "Remove one leading zero" <|
             \_ ->
-                SwedishBankAccountNumber.ClearingNumber.fromString " 00- 096 61"
+                SwedishBankAccountNumber.ClearingNumber.fromString " 0- 96 61"
                     |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.toString)
                     |> Expect.equal (Ok "9661")
         , test "getBankName" <|
