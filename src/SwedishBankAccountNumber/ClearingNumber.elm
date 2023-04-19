@@ -103,6 +103,7 @@ fromString string =
     let
         digits =
             String.filter Char.isDigit string
+                |> trimLeadingZeroes
 
         numDigits =
             String.length digits
@@ -128,6 +129,15 @@ fromString string =
 
         Nothing ->
             Err (BadLength numDigits)
+
+
+trimLeadingZeroes : String -> String
+trimLeadingZeroes string =
+    if String.startsWith "0" string then
+        trimLeadingZeroes (String.dropLeft 1 string)
+
+    else
+        string
 
 
 {-| Get a string containing digits only (no hyphens or spaces or anything),

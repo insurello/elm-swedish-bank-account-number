@@ -84,6 +84,17 @@ bankSuite =
                             , accountNumber = "4172385"
                             }
                         )
+        , test "Leading zeroes in account number (but not clearing number) should be preserved" <|
+            \_ ->
+                validate "09420" ", 000 23 88"
+                    |> Result.map SwedishBankAccountNumber.toRecord
+                    |> Expect.equal
+                        (Ok
+                            { bankName = "Forex Bank"
+                            , clearingNumber = "9420"
+                            , accountNumber = "0002388"
+                            }
+                        )
         , test "Handelsbanken" <|
             \_ ->
                 validate "6789" "123456789"
@@ -177,6 +188,11 @@ clearingNumberSuite =
         , test "toString" <|
             \_ ->
                 SwedishBankAccountNumber.ClearingNumber.fromString " 96 61-"
+                    |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.toString)
+                    |> Expect.equal (Ok "9661")
+        , test "remove leading zeroes" <|
+            \_ ->
+                SwedishBankAccountNumber.ClearingNumber.fromString " 00- 096 61"
                     |> Result.map (Tuple.second >> SwedishBankAccountNumber.ClearingNumber.toString)
                     |> Expect.equal (Ok "9661")
         , test "getBankName" <|
