@@ -100,6 +100,7 @@ ranges, which is why some of the variants below carry extra data.
 -}
 type Bank
     = Svea
+    | Aion
     | Avanza
     | BlueStep
     | BNP
@@ -107,7 +108,6 @@ type Bank
     | DNB
     | Ekobanken
     | ErikPenser
-    | Ferratum
     | Forex
     | ICA
     | IKANO
@@ -119,7 +119,8 @@ type Bank
     | Lansforsakringar AccountType1Validation
     | Marginalen
     | MedMera
-    | Nordax
+    | Multitude
+    | Noba
     | Nordnet
     | Northmill
     | Resurs
@@ -145,6 +146,9 @@ getName bank =
         Svea ->
             "Svea Bank"
 
+        Aion ->
+            "Aion Bank"
+
         Avanza ->
             "Avanza Bank"
 
@@ -165,9 +169,6 @@ getName bank =
 
         ErikPenser ->
             "Erik Penser"
-
-        Ferratum ->
-            "Ferratum Bank"
 
         Forex ->
             "Forex Bank"
@@ -202,8 +203,13 @@ getName bank =
         MedMera ->
             "MedMera Bank"
 
-        Nordax ->
-            "Nordax Bank"
+        Multitude ->
+            -- Changed name in 2022.
+            "Multitude Bank (tidigare Ferratum)"
+
+        Noba ->
+            -- Changed name in 2023.
+            "NOBA Bank Group (tidigare Nordax)"
 
         Nordnet ->
             "Nordnet Bank"
@@ -263,6 +269,9 @@ clearingRanges =
     [ ( Svea
       , range 9660 9669
       )
+    , ( Aion
+      , range 9580 9589
+      )
     , ( Avanza
       , range 9550 9569
       )
@@ -286,9 +295,6 @@ clearingRanges =
       )
     , ( ErikPenser
       , range 9590 9599
-      )
-    , ( Ferratum
-      , range 9070 9079
       )
     , ( Forex
       , range 9400 9449
@@ -329,7 +335,10 @@ clearingRanges =
     , ( MedMera
       , range 9650 9659
       )
-    , ( Nordax
+    , ( Multitude
+      , range 9070 9079
+      )
+    , ( Noba
       , range 9640 9649
       )
     , ( Nordnet
@@ -426,6 +435,9 @@ getAccountNumberLength bank =
         Svea ->
             FixedLength 7
 
+        Aion ->
+            FixedLength 7
+
         Avanza ->
             FixedLength 7
 
@@ -445,9 +457,6 @@ getAccountNumberLength bank =
             FixedLength 7
 
         ErikPenser ->
-            FixedLength 7
-
-        Ferratum ->
             FixedLength 7
 
         Forex ->
@@ -483,7 +492,10 @@ getAccountNumberLength bank =
         MedMera ->
             FixedLength 7
 
-        Nordax ->
+        Multitude ->
+            FixedLength 7
+
+        Noba ->
             FixedLength 7
 
         Nordnet ->
@@ -553,6 +565,9 @@ getAccountType bank =
         Svea ->
             Type1 Full
 
+        Aion ->
+            Type1 SkipFirstDigit
+
         Avanza ->
             Type1 Full
 
@@ -573,9 +588,6 @@ getAccountType bank =
 
         ErikPenser ->
             Type1 Full
-
-        Ferratum ->
-            Type1 SkipFirstDigit
 
         Forex ->
             Type1 SkipFirstDigit
@@ -610,7 +622,10 @@ getAccountType bank =
         MedMera ->
             Type1 Full
 
-        Nordax ->
+        Multitude ->
+            Type1 SkipFirstDigit
+
+        Noba ->
             Type1 Full
 
         Nordnet ->
@@ -677,6 +692,9 @@ getCategory bank =
         Svea ->
             Standard
 
+        Aion ->
+            Standard
+
         Avanza ->
             DataclearingOnly
 
@@ -696,9 +714,6 @@ getCategory bank =
             Standard
 
         ErikPenser ->
-            Standard
-
-        Ferratum ->
             Standard
 
         Forex ->
@@ -734,7 +749,10 @@ getCategory bank =
         MedMera ->
             Historical
 
-        Nordax ->
+        Multitude ->
+            Standard
+
+        Noba ->
             DataclearingOnly
 
         Nordnet ->
