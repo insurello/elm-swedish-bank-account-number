@@ -204,12 +204,12 @@ getName bank =
             "MedMera Bank"
 
         Multitude ->
-            -- Changed name in 2022.
-            "Multitude Bank (tidigare Ferratum)"
+            -- Changed name from Ferratum Bank in 2022.
+            "Multitude Bank"
 
         Noba ->
-            -- Changed name in 2023.
-            "NOBA Bank Group (tidigare Nordax)"
+            -- Changed name from Nordax Bank in 2023.
+            "NOBA Bank Group"
 
         Nordnet ->
             "Nordnet Bank"
