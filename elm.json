@@ -3,7 +3,7 @@
     "name": "insurello/elm-swedish-bank-account-number",
     "summary": "Validate Swedish bank account numbers",
     "license": "MIT",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "exposed-modules": [
         "SwedishBankAccountNumber",
         "SwedishBankAccountNumber.ClearingNumber"
