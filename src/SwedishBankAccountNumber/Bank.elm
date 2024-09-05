@@ -735,7 +735,7 @@ getCategory bank =
             DataclearingOnly
 
         Lunar ->
-            DataclearingOnly
+            Standard
 
         LanSpar ->
             DataclearingOnly
